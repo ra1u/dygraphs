@@ -643,8 +643,8 @@ Dygraph.prototype.toDataXCoord = function(x) {
   }
 
   var area = this.plotter_.area;
-  var xRange = this.xAxisRange();
-
+  var r = this.xAxisRange();
+  var xRange = [r[0].valueOf(),r[1].valueOf()];
   if (!this.attributes_.getForAxis("logscale", 'x')) {
     return xRange[0] + (x - area.x) / area.w * (xRange[1] - xRange[0]);
   } else {
