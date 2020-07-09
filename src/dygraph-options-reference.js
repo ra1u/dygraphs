@@ -70,6 +70,16 @@ OPTIONS_REFERENCE =  // <JSON>
     ],
     "description": "Draw a custom item when drawPoints is enabled. Default is a small dot matching the series color. This method should constrain drawing to within pointSize pixels from (cx, cy).  Also see <a href='#drawHighlightPointCallback'>drawHighlightPointCallback</a>"
   },
+  "newposCallback": {
+    "default": "null",
+    "labels": ["Callbacks"],
+    "type": "bool function(g)",
+    "parameters": [
+      [ "g" , "the reference graph" ]
+    ],
+    "description": "Called when new data is to be drawn. This eables us to push new data in graph during pan or zoom-in from users interaction. Should return true/false when caller should/shouldn't redraw scene. Thet is, When graph is updated with new data, it should return false."
+  }
+  ,
   "height": {
     "default": "320",
     "labels": ["Overall display"],

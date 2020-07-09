@@ -212,7 +212,14 @@ DygraphInteraction.movePan = function(event, g, context) {
     }
   }
 
-  g.drawGraph_(false);
+  var callDrawGraph = true;
+  const newposCallback = g.getFunctionOption('newposCallback');
+  if(newposCallback){
+    callDrawGraph = newposCallback.call(g,g);
+  }
+  if(callDrawGraph){
+    g.drawGraph_(false);
+  }
 };
 
 /**

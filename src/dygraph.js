@@ -1432,7 +1432,14 @@ Dygraph.prototype.doAnimatedZoom = function(oldXRange, newXRange, oldYRanges, ne
     if (windows.length) {
       this.dateWindow_ = windows[step];
     }
-    this.drawGraph_();
+	var callDrawGraph = true;
+	const newposCallback = this.getFunctionOption('newposCallback');
+    if(newposCallback){
+      callDrawGraph = newposCallback.call(this,this);
+    }
+    if(callDrawGraph){ 
+	    this.drawGraph_();
+    }
   }, steps, Dygraph.ANIMATION_DURATION / steps, callback);
 };
 
