@@ -43,7 +43,7 @@ uglifyjs --compress --mangle \
   dist/dygraph.tmp.js
 
 # Build GWT JAR
-jar -cf dist/dygraph-gwt.jar -C gwt org
+# jar -cf dist/dygraph-gwt.jar -C gwt org
 
 # Minify CSS
 cp css/dygraph.css dist/
