@@ -1,48 +1,34 @@
 #!/bin/bash
 # This generates everything under dist:
 # bundled JS, minified JS, minified CSS and source maps.
-set -o errexit
+set -e
 
-mkdir -p dist
+# to run in docker 
+# podman run -it --rm -w $PWD -v $PWD:$PWD node bash 
 
-# Create dist/dygraph.js
-browserify \
-  -v \
-  -t [ babelify --presets [ @babel/preset-env ] ] \
-  --debug \
-  --standalone Dygraph \
-  src/dygraph.js \
-  > dist/dygraph.tmp.js
+# to install UNCOMMENT the following lines
+npm install --include=dev
+export PATH=$PATH:./node_modules/.bin
 
-# Create dist/dygraph.js.map
-cat dist/dygraph.tmp.js | exorcist --base . dist/dygraph.js.map > dist/dygraph.js
+# bunde everything togeter in namespace Dygraphs
+rollup src/dygraph.js \
+	   -o dist/dygraph.rollup.js \
+	   --sourcemapFile dist/dygraph.js.map \
+	   --format iife \
+	   --name Dygraphs 
 
 
-cp dist/dygraph.js dist/dygraph.tmp.js
-cp dist/dygraph.tmp.js dist/dygraph.tmp.js.map
 
-# Create dist/dygraph.tmp.js.map
-#cat dist/dygraph.tmp.js | exorcist --base . dist/dygraph.tmp.js.map > /dev/null
+babel dist/dygraph.rollup.js  --out-file dist/dygraph.js --presets babel-preset-es2015
 
-header='/*! @license Copyright 2017 Dan Vanderkam (danvdk@gmail.com) MIT-licensed (http://opensource.org/licenses/MIT) */'
+#minify
+uglifyjs \
+		 -o dist/dygraph.min.js \
+		 dist/dygraph.js
 
-# Create dist/dygraph.js.min{,.map}
-uglifyjs --compress --mangle \
-  -o dist/dygraph.min.js \
-  dist/dygraph.tmp.js
-
-# Build GWT JAR
-# jar -cf dist/dygraph-gwt.jar -C gwt org
-
-# Minify CSS
+# uglify css
 cp css/dygraph.css dist/
-cleancss css/dygraph.css -o dist/dygraph.min.css --source-map --source-map-inline-sources
-
-# Build ES5-compatible distribution
-
-babel src -d src-es5 --compact false
+cleancss css/dygraph.css -o dist/dygraph.min.css \
+		 --source-map --source-map-inline-sources 
 
 
-# Remove temp files.
-rm dist/dygraph.tmp.js
-rm dist/dygraph.tmp.js.map
